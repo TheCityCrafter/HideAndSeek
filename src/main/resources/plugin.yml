@@ -1,0 +1,7 @@
+name: HideAndSeek
+version: '1.0-SNAPSHOT'
+main: de.thecitycrafter.hideAndSeek.HideAndSeek
+api-version: '1.21'
+commands:
+  hideandseek:
+    permission: hideandseek.admin
