@@ -1,3 +1,9 @@
 lobby: null
 game: null
 started: false
+timer:
+  sec: 0
+  min: 0
+  hrs: 0
+  countdown: false
+

@@ -5,12 +5,15 @@ import java.util.List;
 
 public class secondsToTimer {
 
-    public static List<Integer> secondsToMin(int seconds){
-        int endSec = seconds/60;
-        int endMin = seconds%60;
+    public static List<Integer> secondsToTimer(int totalSecs) {
+        int hours = totalSecs / 3600;
+        int minutes = (totalSecs % 3600) / 60;
+        int seconds = totalSecs % 60;
+
         List<Integer> value = new ArrayList<>();
-        value.add(endMin);
-        value.add(endSec);
+        value.add(hours);
+        value.add(minutes);
+        value.add(seconds);
         return value;
     }
 }
