@@ -4,6 +4,7 @@ import de.thecitycrafter.hideAndSeek.commands.HideAndSeekCommand;
 import de.thecitycrafter.hideAndSeek.listener.DeathListener;
 import de.thecitycrafter.hideAndSeek.listener.JoinListener;
 import de.thecitycrafter.hideAndSeek.timer.TimerEngine;
+import de.thecitycrafter.hideAndSeek.utils.Placeholder;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;
@@ -14,6 +15,8 @@ public final class HideAndSeek extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        new Placeholder().register();
+
         plugin = this;
 
         this.saveDefaultConfig();

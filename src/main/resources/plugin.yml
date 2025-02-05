@@ -6,3 +6,4 @@ commands:
   hideandseek:
     permission: hideandseek.admin
     aliases: has
+depend: ["PlaceholderAPI"]

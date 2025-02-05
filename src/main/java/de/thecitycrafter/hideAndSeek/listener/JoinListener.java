@@ -13,7 +13,7 @@ public class JoinListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         if (HideAndSeek.getPluginConfig().getBoolean("started")){
             event.getPlayer().teleport(Objects.requireNonNull(HideAndSeek.getPluginConfig().getLocation("game")));
-        }else{
+        }else {
             event.getPlayer().teleport(Objects.requireNonNull(HideAndSeek.getPluginConfig().getLocation("lobby")));
         }
 
