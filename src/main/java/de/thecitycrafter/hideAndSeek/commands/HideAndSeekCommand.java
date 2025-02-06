@@ -16,10 +16,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.scoreboard.Criteria;
-import org.bukkit.scoreboard.Objective;
-import org.bukkit.scoreboard.Scoreboard;
-import org.bukkit.scoreboard.ScoreboardManager;
+import org.bukkit.scoreboard.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,6 +85,10 @@ public class HideAndSeekCommand implements CommandExecutor, TabExecutor {
             player.sendMessage("§6§lModGames §8| §4" + args[1] + " ist keine Nummer!");
             return;
         }
+        Scoreboard score = Bukkit.getScoreboardManager().getMainScoreboard();
+        Team noNameTag = score.registerNewTeam("noNameTag");
+        noNameTag.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.NEVER);
+
         int hideTime = Integer.parseInt(args[1]);
         TimerEngine.setStartTime(hideTime);
         Bukkit.setWhitelist(true);
@@ -95,6 +96,7 @@ public class HideAndSeekCommand implements CommandExecutor, TabExecutor {
             i.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, PotionEffect.INFINITE_DURATION, 255, false, false, false));
             i.setGameMode(GameMode.ADVENTURE);
             Bukkit.getWhitelistedPlayers().add(i);
+            score.getTeam("noNameTag").addEntry(i.getDisplayName());
 
             if (!i.getScoreboardTags().contains("seeker")) {
                 i.setRespawnLocation(connfick.getLocation("game"), true);
@@ -126,6 +128,7 @@ public class HideAndSeekCommand implements CommandExecutor, TabExecutor {
         HideAndSeek.getPlugin().saveConfig();
         Bukkit.setWhitelist(false);
         Bukkit.getWhitelistedPlayers().clear();
+        Bukkit.getScoreboardManager().getMainScoreboard().getTeam("noNameTag").unregister();
 
         for (Player p : Bukkit.getOnlinePlayers()) {
             p.teleport(connfick.getLocation("lobby"));

@@ -9,9 +9,11 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scoreboard.Team;
 
 public final class HideAndSeek extends JavaPlugin {
     private static HideAndSeek plugin;
+
 
     @Override
     public void onEnable() {
