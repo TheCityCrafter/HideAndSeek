@@ -1,8 +1,8 @@
 package de.thecitycrafter.hideAndSeek;
 
 import de.thecitycrafter.hideAndSeek.commands.HideAndSeekCommand;
+import de.thecitycrafter.hideAndSeek.listener.DamageListener;
 import de.thecitycrafter.hideAndSeek.listener.DeathListener;
-import de.thecitycrafter.hideAndSeek.listener.JoinListener;
 import de.thecitycrafter.hideAndSeek.timer.TimerEngine;
 import de.thecitycrafter.hideAndSeek.utils.Placeholder;
 import org.bukkit.Bukkit;
@@ -15,6 +15,7 @@ public final class HideAndSeek extends JavaPlugin {
 
     @Override
     public void onEnable() {
+
         new Placeholder().register();
 
         plugin = this;
@@ -26,7 +27,7 @@ public final class HideAndSeek extends JavaPlugin {
 
 
         getServer().getPluginManager().registerEvents(new DeathListener(), this);
-        getServer().getPluginManager().registerEvents(new JoinListener(), this);
+        getServer().getPluginManager().registerEvents(new DamageListener(), this);
 
         Bukkit.getScheduler().scheduleSyncRepeatingTask(this, TimerEngine::showTimer, 1L, 1L);
         Bukkit.getScheduler().scheduleSyncRepeatingTask(this, TimerEngine::TimerEngine, 20L, 20L);

@@ -89,6 +89,8 @@ public class HideAndSeekCommand implements CommandExecutor, TabExecutor {
         for (Player i : Bukkit.getOnlinePlayers()) {
             i.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, PotionEffect.INFINITE_DURATION, 255, false, false, false));
             i.setGameMode(GameMode.ADVENTURE);
+            Bukkit.setWhitelist(true);
+
             if (!i.getScoreboardTags().contains("seeker")) {
                 i.setRespawnLocation(connfick.getLocation("game"), true);
                 i.teleport(connfick.getLocation("game"));
@@ -99,11 +101,13 @@ public class HideAndSeekCommand implements CommandExecutor, TabExecutor {
                 i.setHealth(20);
                 ItemStack hoe = new ItemBuilder(Material.WOODEN_HOE,1, (byte) 59).addEnchant(Enchantment.KNOCKBACK, 10).setName("§r§cDer Klopper" ).toItemStack();
                 i.getInventory().setItemInMainHand(hoe);
+                Bukkit.getWhitelistedPlayers().add(i);
             }else{
                 i.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, hideTime*20, 255, false, false, false));
                 i.setSaturation(20);
                 i.setHealth(20);
                 i.setRespawnLocation(connfick.getLocation("lobby"), true);
+                Bukkit.getWhitelistedPlayers().add(i);
             }
         }
 
@@ -115,6 +119,9 @@ public class HideAndSeekCommand implements CommandExecutor, TabExecutor {
         connfick.set("timer.hrs", 0);
         connfick.set("started", false);
         HideAndSeek.getPlugin().saveConfig();
+        Bukkit.setWhitelist(false);
+        Bukkit.getWhitelistedPlayers().clear();
+
         for (Player p : Bukkit.getOnlinePlayers()) {
             p.teleport(connfick.getLocation("lobby"));
             p.getInventory().clear();
@@ -164,9 +171,16 @@ public class HideAndSeekCommand implements CommandExecutor, TabExecutor {
             tabcomplete.add("perks");
         }
 
-        if (args.length == 2 && (args[0].equals("addseeker") || args[0].equals("removeseeker"))) {
+        if (args.length == 2 && args[0].equals("addseeker")) {
             for (Player i : Bukkit.getOnlinePlayers()) {
                 tabcomplete.add(i.getDisplayName());
+            }
+        }
+        if (args.length == 2 && args[0].equals("removeseeker")) {
+            for (Player i : Bukkit.getOnlinePlayers()) {
+                if (i.getScoreboardTags().contains("seeker")){
+                    tabcomplete.add(i.getDisplayName());
+                }
             }
         }
         if (args.length == 2 && args[0].equals("perks")) {
