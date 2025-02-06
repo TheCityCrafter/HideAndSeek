@@ -16,6 +16,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scoreboard.Criteria;
+import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.ScoreboardManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -86,10 +90,11 @@ public class HideAndSeekCommand implements CommandExecutor, TabExecutor {
         }
         int hideTime = Integer.parseInt(args[1]);
         TimerEngine.setStartTime(hideTime);
+        Bukkit.setWhitelist(true);
         for (Player i : Bukkit.getOnlinePlayers()) {
             i.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, PotionEffect.INFINITE_DURATION, 255, false, false, false));
             i.setGameMode(GameMode.ADVENTURE);
-            Bukkit.setWhitelist(true);
+            Bukkit.getWhitelistedPlayers().add(i);
 
             if (!i.getScoreboardTags().contains("seeker")) {
                 i.setRespawnLocation(connfick.getLocation("game"), true);
@@ -101,13 +106,12 @@ public class HideAndSeekCommand implements CommandExecutor, TabExecutor {
                 i.setHealth(20);
                 ItemStack hoe = new ItemBuilder(Material.WOODEN_HOE,1, (byte) 59).addEnchant(Enchantment.KNOCKBACK, 10).setName("§r§cDer Klopper" ).toItemStack();
                 i.getInventory().setItemInMainHand(hoe);
-                Bukkit.getWhitelistedPlayers().add(i);
+
             }else{
                 i.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, hideTime*20, 255, false, false, false));
                 i.setSaturation(20);
                 i.setHealth(20);
                 i.setRespawnLocation(connfick.getLocation("lobby"), true);
-                Bukkit.getWhitelistedPlayers().add(i);
             }
         }
 
@@ -118,6 +122,7 @@ public class HideAndSeekCommand implements CommandExecutor, TabExecutor {
         connfick.set("timer.min", 0);
         connfick.set("timer.hrs", 0);
         connfick.set("started", false);
+        connfick.set("leaderboard", null);
         HideAndSeek.getPlugin().saveConfig();
         Bukkit.setWhitelist(false);
         Bukkit.getWhitelistedPlayers().clear();
