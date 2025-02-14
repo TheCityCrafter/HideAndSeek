@@ -38,7 +38,7 @@ public class TimerEngine {
                         p.teleport(HideAndSeek.getPluginConfig().getLocation("game"));
                         p.sendMessage("§6§lModGames §8| §7Die Sucherzeit hat gestartet! Du kannst nun suchen.");
                         ItemStack sword = new ItemBuilder(Material.DIAMOND_SWORD,1, (byte) 0).setName("§bDer Aufräumer").toItemStack();
-                        p.getInventory().setItemInMainHand(sword);
+                        p.getInventory().setItem(0,sword);
                     }else{
                         p.sendMessage("§6§lModGames §8| §7Die Sucherzeit hat gestartet! Viel Glück.");
                     }

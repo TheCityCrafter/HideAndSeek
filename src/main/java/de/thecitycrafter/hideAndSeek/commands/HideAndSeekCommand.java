@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HideAndSeekCommand implements CommandExecutor, TabExecutor {
-    private static FileConfiguration connfick = HideAndSeek.getPlugin().getConfig();
+    private static final FileConfiguration config = HideAndSeek.getPlugin().getConfig();
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String s, String[] args) {
@@ -42,13 +42,13 @@ public class HideAndSeekCommand implements CommandExecutor, TabExecutor {
 
 
     private static void setLobby(Player player) {
-        connfick.set("lobby", player.getLocation());
+        config.set("lobby", player.getLocation());
         HideAndSeek.getPlugin().saveConfig();
         player.sendMessage("§6§lModGames §8| §7Lobby erfolgreich gesetzt.");
     }
 
     private static void setGame(Player player) {
-        connfick.set("game", player.getLocation());
+        config.set("game", player.getLocation());
         HideAndSeek.getPlugin().saveConfig();
         player.sendMessage("§6§lModGames §8| §7Spiel erfolgreich gesetzt.");
     }
@@ -93,45 +93,48 @@ public class HideAndSeekCommand implements CommandExecutor, TabExecutor {
         TimerEngine.setStartTime(hideTime);
         Bukkit.setWhitelist(true);
         for (Player i : Bukkit.getOnlinePlayers()) {
+            ItemStack food = new ItemBuilder(Material.BREAD,64).toItemStack();
+            i.getInventory().setItem(8, food);
+
             i.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, PotionEffect.INFINITE_DURATION, 255, false, false, false));
             i.setGameMode(GameMode.ADVENTURE);
-            Bukkit.getWhitelistedPlayers().add(i);
             score.getTeam("noNameTag").addEntry(i.getDisplayName());
 
             if (!i.getScoreboardTags().contains("seeker")) {
-                i.setRespawnLocation(connfick.getLocation("game"), true);
-                i.teleport(connfick.getLocation("game"));
-                i.sendMessage("§6§lModGames §8| §7Die Versteckzeit hat gestartet! Du hast nun: " + (connfick.getInt(
-                        "timer.min") + connfick.getInt("timer.hrs") * 60) + " Minuten und " + connfick.getInt(
+                i.setRespawnLocation(config.getLocation("game"), true);
+                i.teleport(config.getLocation("game"));
+                i.sendMessage("§6§lModGames §8| §7Die Versteckzeit hat gestartet! Du hast nun: " + (config.getInt(
+                        "timer.min") + config.getInt("timer.hrs") * 60) + " Minuten und " + config.getInt(
                         "timer.sec") + " Sekunden Zeit. Verstecke dich gut!");
                 i.setSaturation(20);
                 i.setHealth(20);
                 ItemStack hoe = new ItemBuilder(Material.WOODEN_HOE,1, (byte) 59).addEnchant(Enchantment.KNOCKBACK, 10).setName("§r§cDer Klopper" ).toItemStack();
-                i.getInventory().setItemInMainHand(hoe);
+                i.getInventory().setItem(0, hoe);
+                i.setWalkSpeed(0.2f);
 
             }else{
                 i.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, hideTime*20, 255, false, false, false));
                 i.setSaturation(20);
                 i.setHealth(20);
-                i.setRespawnLocation(connfick.getLocation("lobby"), true);
+                i.setRespawnLocation(config.getLocation("lobby"), true);
+                i.setWalkSpeed(0.22f);
             }
         }
 
     }
 
     private static void stop(String[] args) {
-        connfick.set("timer.sec", 0);
-        connfick.set("timer.min", 0);
-        connfick.set("timer.hrs", 0);
-        connfick.set("started", false);
-        connfick.set("leaderboard", null);
+        config.set("timer.sec", 0);
+        config.set("timer.min", 0);
+        config.set("timer.hrs", 0);
+        config.set("started", false);
+        config.set("leaderboard", null);
         HideAndSeek.getPlugin().saveConfig();
         Bukkit.setWhitelist(false);
-        Bukkit.getWhitelistedPlayers().clear();
         Bukkit.getScoreboardManager().getMainScoreboard().getTeam("noNameTag").unregister();
 
         for (Player p : Bukkit.getOnlinePlayers()) {
-            p.teleport(connfick.getLocation("lobby"));
+            p.teleport(config.getLocation("lobby"));
             p.getInventory().clear();
             p.sendMessage("§6§lModGames §8| §7Das Spiel wurde gestoppt. Du wirst zur Lobby zurück teleportiert.");
         }
