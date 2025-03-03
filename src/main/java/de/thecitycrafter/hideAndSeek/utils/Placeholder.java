@@ -25,7 +25,7 @@ public class Placeholder extends PlaceholderExpansion {
     }
     @Override
     public boolean persist() {
-        return true; //
+        return true;
     }
 
     @Override
@@ -64,6 +64,8 @@ public class Placeholder extends PlaceholderExpansion {
         }
         return String.valueOf(count);
     }
+
+
     private static String hiders(){
         int count = 0;
         for(Player p :Bukkit.getOnlinePlayers()){

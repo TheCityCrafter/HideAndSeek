@@ -4,6 +4,7 @@ import de.thecitycrafter.hideAndSeek.HideAndSeek;
 import de.thecitycrafter.hideAndSeek.timer.TimerEngine;
 import de.thecitycrafter.hideAndSeek.utils.ItemBuilder;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -18,11 +19,13 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scoreboard.*;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 public class HideAndSeekCommand implements CommandExecutor, TabExecutor {
     private static final FileConfiguration config = HideAndSeek.getPlugin().getConfig();
+
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String s, String[] args) {
@@ -33,8 +36,8 @@ public class HideAndSeekCommand implements CommandExecutor, TabExecutor {
                 case "addseeker" -> addseeker(player, args);
                 case "removeseeker" -> removeseeker(player, args);
                 case "start" -> start(player, args);
-                case "stop" -> stop(args);
-                case "perks" -> perks(args);
+                case "stop" -> stop(player, args);
+                case "perks" -> perks(player, args);
             }
         }
         return true;
@@ -44,19 +47,19 @@ public class HideAndSeekCommand implements CommandExecutor, TabExecutor {
     private static void setLobby(Player player) {
         config.set("lobby", player.getLocation());
         HideAndSeek.getPlugin().saveConfig();
-        player.sendMessage("§6§lModGames §8| §7Lobby erfolgreich gesetzt.");
+        sendLangText("setLobby", player);
     }
 
     private static void setGame(Player player) {
         config.set("game", player.getLocation());
         HideAndSeek.getPlugin().saveConfig();
-        player.sendMessage("§6§lModGames §8| §7Spiel erfolgreich gesetzt.");
+        sendLangText("setGame", player);
     }
 
     private static void addseeker(Player player, String[] args) {
         Player target = Bukkit.getPlayer(args[1]);
         if (target == null) {
-            player.sendMessage("§6§lModGames §8| §4Kein Spieler gefunden.");
+            sendLangText("addSeekerNoPlayer",player);
             return;
         }
         target.addScoreboardTag("seeker");
@@ -66,7 +69,7 @@ public class HideAndSeekCommand implements CommandExecutor, TabExecutor {
     private static void removeseeker(Player player, String[] args) {
         Player target = Bukkit.getPlayer(args[1]);
         if (target == null) {
-            player.sendMessage("§6§lModGames §8| §4Kein Spieler gefunden.");
+            sendLangText("removeSeekerNoPlayer",player);
             return;
         }
         if (!target.getScoreboardTags().contains("seeker")) {
@@ -78,11 +81,22 @@ public class HideAndSeekCommand implements CommandExecutor, TabExecutor {
     }
 
 
+
+
     private static void start(Player player, String[] args) {
+        if (args.length == 1){
+            sendLangText("startGameSyntax",player);
+            return;
+        }
+
+        if (config.getLocation("game") == null && config.getLocation("lobby") == null) {
+            sendLangText("startGameNotSetLobbyOrGame", player);
+            return;
+        }
         try {
             int hideTime = Integer.parseInt(args[1]);
         } catch (Exception e) {
-            player.sendMessage("§6§lModGames §8| §4" + args[1] + " ist keine Nummer!");
+            player.sendMessage("§6§lModGames §8| §4'" + args[1] + "' ist keine Nummer!");
             return;
         }
         Scoreboard score = Bukkit.getScoreboardManager().getMainScoreboard();
@@ -108,7 +122,7 @@ public class HideAndSeekCommand implements CommandExecutor, TabExecutor {
                         "timer.sec") + " Sekunden Zeit. Verstecke dich gut!");
                 i.setSaturation(20);
                 i.setHealth(20);
-                ItemStack hoe = new ItemBuilder(Material.WOODEN_HOE,1, (byte) 59).addEnchant(Enchantment.KNOCKBACK, 10).setName("§r§cDer Klopper" ).toItemStack();
+                ItemStack hoe = new ItemBuilder(Material.WOODEN_HOE,1, (byte) 59).addEnchant(Enchantment.KNOCKBACK, 10).setName(getLangText("itemHoe")).toItemStack();
                 i.getInventory().setItem(0, hoe);
                 i.setWalkSpeed(0.2f);
 
@@ -123,7 +137,12 @@ public class HideAndSeekCommand implements CommandExecutor, TabExecutor {
 
     }
 
-    private static void stop(String[] args) {
+    private static void stop(Player player,String[] args) {
+        if (!config.getBoolean("started")){
+            sendLangText("stopGameFailed", player);
+            return;
+        }
+
         config.set("timer.sec", 0);
         config.set("timer.min", 0);
         config.set("timer.hrs", 0);
@@ -136,12 +155,14 @@ public class HideAndSeekCommand implements CommandExecutor, TabExecutor {
         for (Player p : Bukkit.getOnlinePlayers()) {
             p.teleport(config.getLocation("lobby"));
             p.getInventory().clear();
-            p.sendMessage("§6§lModGames §8| §7Das Spiel wurde gestoppt. Du wirst zur Lobby zurück teleportiert.");
+            sendLangText("stopGameSuccess", p);
         }
     }
 
 
-    private static void perks( String[] args) {
+    private static void perks(Player player, String[] args) {
+        player.sendMessage("§6§lModGames §8| §bDieses Feature ist WIP. Es könnten Fehler auftretten!");
+
         switch (args[1]) {
             case "glowing": {
                 for (Player p : Bukkit.getOnlinePlayers()) {
@@ -202,4 +223,13 @@ public class HideAndSeekCommand implements CommandExecutor, TabExecutor {
 
         return tabcomplete;
     }
+    private static void sendLangText(String path, Player player){
+        FileConfiguration lang = HideAndSeek.getLang();
+        player.sendMessage(ChatColor.translateAlternateColorCodes('&', lang.getString(path)));
+    }
+    private static String getLangText(String path){
+        FileConfiguration lang = HideAndSeek.getLang();
+        return lang.getString(ChatColor.translateAlternateColorCodes('&', path));
+    }
+
 }

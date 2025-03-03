@@ -1,5 +1,5 @@
-lobby: null
-game: null
+lobby:
+game:
 started: false
 timer:
   sec: 0

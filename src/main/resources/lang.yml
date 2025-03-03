@@ -1,0 +1,16 @@
+#available placeholders: %sender%, %target%, %timer% %arg_0%, %arg_1% %arg_2%
+
+setLobby: "&6&lModGames &8| &7Lobby erfolgreich gesetzt."
+setGame: "§6§lModGames §8| §7Spiel erfolgreich gesetzt."
+addSeekerNoPlayer: "§6§lModGames §8| §4Kein Spieler gefunden."
+addSeekerSuccess: "Not yet implemented"
+removeSeekerNoPlayer: "§6§lModGames §8| §4Kein Spieler gefunden."
+removeSeekerFail: "Not yet implented"
+removeSeekerSuccess: "Not yet implemented"
+startGameSyntax: "§6§lModGames §8| §4Syntax error. Nutze /has start [zeit in sekunden]"
+startGameNotSetLobbyOrGame: "§6§lModGames §8| §4Du musst eine Lobby und ein Game setzen."
+startGameNotANumber: "Not yet implemented"
+startGameHiderTime: "Not yet implemented"
+stopGameFailed: "§6§lModGames §8| §4Es läuft aktuell kein Spiel."
+stopGameSuccess: "§6§lModGames §8| §7Das Spiel wurde gestoppt. Du wirst zur Lobby zurück teleportiert."
+itemHoe: "§r§cDer Klopper"
